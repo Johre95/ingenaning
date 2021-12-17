@@ -1,0 +1,203 @@
+        #Outcome
+        try:
+            findGemensam = findFirstOccur(searchKey('(gemensam)[^m]',rulingOnly,1), rulingOnly)
+        except TypeError:
+            findGemensam = findFirstOccur('gemen-', rulingOnly)
+        vardnInGemensam = 'vårdn' in findGemensam
+        findEnsam = findFirstOccur('ensam', rulingOnly)
+        findVardn = findFirstOccur('vårdn', rulingOnly)
+        findEnsamVardn = findTwoWordsFirstOccur('ensam','vårdn',rulingOnly)
+        findGemensamVardn = findTwoWordsFirstOccur('gemensam', 'vårdn', rulingOnly)
+        findVardnBarn = findTwoWordsFirstOccur('barn', 'vårdn', rulingOnly)
+        transferToDef = 'till ' + svNameFirst
+        transferToPlaint = 'till ' + plaintNameFirst
+        vardnInRuling = 'vårdn' in rulingOnly
+        findChild = findFirstOccur(i, rulingOnly)
+        
+        print("RULING ONLY: "+rulingOnly)       
+                
+        if 'vård' not in rulingOnly: #reduced to vård to account for vårdanden
+            #No custody ruling in this court record
+            print("out1a")
+            dummyOut = 0
+        elif vardnInRuling and 'påminn' in findVardn:
+            print("out1c")
+            dummyOut = 0
+        elif vardnInRuling and 'erinra' in findVardn:
+            print("out1d")
+            dummyOut = 0
+        elif vardnInRuling and 'upply' in findVardn:
+            print("out1e")
+            dummyOut = 0
+        elif 'vård' not in findChild:
+            print('out1f')
+            dummyOut = 0
+        elif i in findVardn and 'ska' in findGemensam and 'om' in findGemensam and vardnInGemensam and not any([x in findGemensamVardn for x in rejectKey]):
+            dummyOut = 1
+            print("out2")
+        elif i in findVardn and 'vårdn' in rulingOnly and 'fortsätt' in findGemensam and 'ska' in findGemensam and not any([x in findGemensamVardn for x in rejectKey]):
+            dummyOut = 1
+            print("out3")
+        elif i in findVardn and vardnInGemensam and findTwoWords('alltjämt','ska' , findGemensam) and not any([x in findGemensamVardn for x in rejectKey]):
+            dummyOut = 1
+            print("out4")
+        elif i in findVardn and vardnInGemensam and findTwoWords('alltjämt', 'är', rulingOnly) and not any([x in findGemensamVardn for x in rejectKey]):
+            dummyOut = 1
+            print("out5")
+        elif i in findVardn and vardnInGemensam and 'skall tillkomma' in rulingOnly and not any([x in findGemensamVardn for x in rejectKey]): 
+            dummyOut = 1
+            print("out6")
+        elif i in findVardn and vardnInGemensam and 'anförtror' in findVardn and not any([x in findGemensamVardn for x in rejectKey]): 
+            dummyOut = 1
+            print("out6")    
+        elif i in findVardn and 'vårdn' in findEnsam and plaintNameFirst in findEnsam and 'utan' not in findEnsamVardn and not any([x in findEnsamVardn for x in rejectKey]):
+            dummyOut = 2
+            print("out7")
+        elif i in findVardn and 'vårdn' in findEnsam and svNameFirst in findEnsam and 'utan' not in findEnsamVardn and not any([x in findEnsamVardn for x in rejectKey]):
+            dummyOut = 3
+            print("out8")
+        elif i in findVardn and 'ensam' in rulingOnly and vardnInRuling and plaintNameFirst in findVardn and not any([x in findEnsamVardn for x in rejectKey]):
+            dummyOut = 2
+            print("out10a")
+        elif i in findVardn and plaintNameFirst in findEnsam and not any([x in findEnsamVardn for x in rejectKey]):
+            dummyOut = 2
+            print("out10")
+        elif i in findVardn and 'ensam' in rulingOnly and vardnInRuling and  svNameFirst in findVardn and not any([x in findEnsamVardn for x in rejectKey]):
+            dummyOut = 3
+            print("out11a")    
+        elif i in findVardn and svNameFirst in findEnsam and not any([x in findEnsamVardn for x in rejectKey]):
+            dummyOut = 3
+            print("out11")
+        elif i in findVardn and 'vårdn' in findTwoWords('över','flytt',rulingOnly) and transferToDef in findVardn and not any([x in findVardn for x in rejectKey]):
+            dummyOut = 3
+            print("out12")
+        elif i in findVardn and 'vårdn' in findTwoWords('över','flytt',rulingOnly) and transferToPlaint in findVardn and not any([x in findVardn for x in rejectKey]):
+            dummyOut = 2
+            print("out13")
+        elif i in findVardn and vardnInRuling and 'tillerkänn' in findVardn and svNameFirst in findSentence('tillerkänn', rulingOnly) and not any([x in findVardn for x in rejectKey]):
+            dummyOut = 3
+            print("out14")
+        elif i in findVardn and vardnInRuling and 'tillerkänn' in findVardn and plaintNameFirst in findSentence('tillerkänn', rulingOnly) and not any([x in findVardn for x in rejectKey]):
+            dummyOut = 2
+            print("out15")
+        elif i in findVardn and vardnInRuling and 'anförtro' in findVardn and svNameFirst in findSentence('anförtro', rulingOnly) and not any([x in findVardn for x in rejectKey]):
+            dummyOut = 3
+            print("out14")
+        elif i in findVardn and vardnInRuling and 'anförtro' in findVardn and plaintNameFirst in findSentence('anförtro', rulingOnly) and not any([x in findVardn for x in rejectKey]):
+            dummyOut = 2
+            print("out15")
+        elif 'käromalet ogillas' in rulingOnly or "lämnas utan bifall" in findVardn or 'avskriv' in findVardn:
+            #"lämnas utan bifall" in findVard because if I search in ruling only it picks up when umgange claims or so are dismissed
+            dummyOut = 4  
+            print("out9")
+        elif findTwoWords('avslås', 'vårdn', rulingOnly):
+            dummyOut = 4
+            print("out9a")
+        elif 'bilaga' in rulingOnly and 'överens' in findSentence('bilaga', rulingOnly):
+            dummyOut = 999
+            print("out16")
+        else: 
+            dummyOut = 999
+            print("out17")
+        
+        #Visitation rights            
+#Iterate through sequence        
+        for key in umgangeKey:
+#Create variable        
+            findUmg = findTwoWordsFirstOccur(key, childNameFirst, rulingOnly)
+#            
+            if childNameFirst == 'not found':
+                dummyVisit = 999
+                print('umg1')
+                break
+            elif findUmg and not any([x in findUmg for x in rejectKey]):  
+                print('umg2')
+                dummyVisit = 1
+                break 
+            elif findTwoWords('semester', childNameFirst, rulingOnly):
+                print('umg3')
+                dummyVisit = 0
+                break
+            elif findTwoWords('bilaga', 'sidorna', rulingOnly):
+                print('umg4')
+                dummyVisit = 999
+                break
+            else:
+                print('umg5')
+                dummyVisit = 0
+                continue
+
+        #N. Physical custody 
+        childTerms = [childNameFirst, 'barn']                
+        for term in childTerms:
+            if childNameFirst == 'not found':
+                dummyPhys = 999
+                print("phsical custody 1")
+                break
+            elif term in findTwoWords('boende', plaintNameFirst, rulingOnly) and not any([x in findTwoWords('boende', plaintNameFirst, rulingOnly) for x in excludePhysical]):
+                dummyPhys = 1
+                print("phsical custody 2")
+                break
+            elif term in findTwoWords('boende', svNameFirst, rulingOnly) and not any([x in findTwoWords('boende', svNameFirst, rulingOnly) for x in excludePhysical]):
+                dummyPhys = 2
+                print("phsical custody 3")
+                break
+            elif term in findTwoWords('bo tillsammans', plaintNameFirst, rulingOnly) and not any([x in findTwoWords('bo tillsammans', plaintNameFirst, rulingOnly) for x in excludePhysical]):
+                dummyPhys = 1
+                print("phsical custody 4")
+                break
+            elif term in findTwoWords('bo tillsammans', svNameFirst, rulingOnly) and not any([x in findTwoWords('bo tillsammans', svNameFirst, rulingOnly) for x in excludePhysical]):
+                dummyPhys = 2
+                print("phsical custody 5")
+                break
+            elif term in findThreeWords('ska','bo', plaintNameFirst, rulingOnly) and not any([x in findThreeWords('ska','bo', plaintNameFirst, rulingOnly) for x in excludePhysical]):
+                dummyPhys = 1  
+                print("phsical custody 6")
+                break
+            elif term in findThreeWords('ska','bo', svNameFirst, rulingOnly) and not any([x in findThreeWords('ska','bo', svNameFirst, rulingOnly) for x in excludePhysical]):
+                dummyPhys = 2
+                print("phsical custody 7")
+                break
+            elif findTwoWords('bilaga', 'sidorna', rulingOnly):
+                dummyPhys = 999
+                print("phsical custody 8")
+                break
+            else:
+                dummyPhys = 0
+                print("phsical custody 9")
+                
+        #Ruling by agreement
+#Iterate through sequence        
+        for termAgree in agreementKey:
+#create variable        
+            findAgree1 = findThreeWords(svNameFirst,'yrkande', termAgree, fullText)
+#conditional statement            
+            if svNameFirst in findTwoWords('yrkande', termAgree, fullText) and not any([x in findAgree1 for x in agreementHelper]):
+#code executed if condition is true            
+                print('agree1: ' + termAgree)
+                dummyAgree = 1
+                dummyUnreach = 0
+                break
+#when the conditional statement is true the for loop stops and the programme runs the code outside the for loop? (i.e. print(dummy agree)) (what happens to the code underneath the conditional statement?)                
+            for termHelper in agreementAdd:
+                findAgree2 = findTwoWords(termAgree, termHelper, fullText)
+                if findAgree2 is not emptyString and not any([x in findAgree2 for x in agreementHelper]):
+                    print('agree2: '+ termAgree + termHelper)
+                    dummyAgree = 1
+                    dummyUnreach = 0
+                    break
+                else:
+                    dummyAgree = 0
+                    continue
+            else: 
+                print('in else for agree')
+                continue
+            break
+        print(dummyAgree)
+        if dummyAgree == 0 and 'förlikning' in findTwoWords('framgå', 'träff', fullText):
+            print('agree4')
+            dummyAgree = 1
+            dummyUnreach = 0
+        if dummyOut == 0:
+            dummyAgree = 0
+                      
